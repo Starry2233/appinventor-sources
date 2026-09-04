@@ -5,11 +5,8 @@
 
 import Foundation
 
-fileprivate let kCircularProgressDefaultColor = Color.blue.int32
-
 public class CircularProgress: ViewComponent, AbstractMethodsForViewComponent {
   private let _view: CircularProgressView
-  private var _color: Int32 = kCircularProgressDefaultColor
   
   public override init(_ parent: ComponentContainer) {
     _view = CircularProgressView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
@@ -28,11 +25,10 @@ public class CircularProgress: ViewComponent, AbstractMethodsForViewComponent {
   
   @objc open var Color: Int32 {
     get {
-      return _color
+      return _view.progressLayer.strokeColor as! Int32
     }
     set(argb) {
-      _color = argb
-      _view.progressColor = argbToColor(argb == AIComponentKit.Color.default.int32 ? kCircularProgressDefaultColor : argb)
+      _view.progressLayer.strokeColor = argbToColor(argb).cgColor
     }
   }
 
@@ -52,12 +48,6 @@ public class CircularProgress: ViewComponent, AbstractMethodsForViewComponent {
 class CircularProgressView: UIView {
   let progressLayer = CAShapeLayer()
   let backgroundLayer = CAShapeLayer()
-  
-  var progressColor: UIColor = Color.blue.uiColor {
-    didSet {
-      progressLayer.strokeColor = progressColor.cgColor
-    }
-  }
   
   override init(frame: CGRect) {
     super.init(frame: frame)
@@ -106,7 +96,7 @@ class CircularProgressView: UIView {
     
     progressLayer.path = progressPath.cgPath
     progressLayer.lineWidth = lineWidth
-    progressLayer.strokeColor = progressColor.cgColor
+    progressLayer.strokeColor = Color.blue.uiColor.cgColor
     progressLayer.fillColor = UIColor.clear.cgColor
     progressLayer.strokeEnd = 0
     
